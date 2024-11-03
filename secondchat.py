@@ -38,7 +38,17 @@ def is_conversion_related(question):
     return "변환" in question
 
 def chat_with_bot():
+    print("=====================================================")
     print("레시피 변환기 챗봇에 오신 것을 환영합니다!")
+    print("먹고싶은 요리 레시피를 말씀해주세요!")
+    print("-----------------------------------------------------")
+    print("**주의사항**")
+    print("1. 기존 레시피 이름을 ['레시피']라는 키워드와 함께 입력해주세요.")
+    print("예) OOO 레시피를 알려주세요.")
+    print("2. 본인의 식단 유형을 ['변환']이라는 키워드와 함께 입력해주세요.")
+    print("예) 저는 비건입니다. 레시피를 변환해주세요.")
+    print("3. 채팅 중 종료를 원하신다면 [종료]나 [exit]를 입력해주세요.")
+    print("=====================================================")
     
     # 질문 체크 여부
     first_question = True
@@ -56,14 +66,7 @@ def chat_with_bot():
                 print("챗봇: 죄송합니다. 요리 레시피 변환만 할 수 있습니다.")
                 continue
             first_question = False  # 첫 질문 체크 후 변경
-            second_question = True   # 두 번째 질문 체크 가능
-
-        # 두 번째 질문일 경우 변환 관련 체크
-        elif second_question:
-            if not is_conversion_related(user_input):
-                print("챗봇: 죄송합니다. 요리 레시피 변환만 할 수 있습니다.")
-                continue
-            second_question = False  # 두 번째 질문 체크 후 변경
+            second_question = True  # 두 번째 질문 체크 가능
 
         # 사용자의 메시지를 세션에 추가합니다.
         chat_session.history.append({"role": "user", "parts": [user_input]})
@@ -73,6 +76,11 @@ def chat_with_bot():
 
         # 응답 텍스트 출력
         print(f"챗봇: {response.text}")
+
+        # 레시피 관련 질문 후 안내 메시지 추가
+        if first_question is False and second_question is True:
+            print("챗봇: 당신의 식단유형을 알려주세요.")
+            second_question = False  # 두 번째 질문 체크 후 변경
 
 # 챗봇과 대화 시작
 chat_with_bot()
