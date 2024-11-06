@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>요리보고, 조리보고!</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="chat-container">
+        <h1>레시피 변환기 챗봇 "요리보고, 조리보고!"</h1>
+        <div id="chat-box" class="chat-box">
+            <p class="bot-message">
+                ====================================================<br>
+                레시피 변환기 챗봇 "요리보고, 조리보고!"에 오신 것을 환영합니다!<br>
+                먹고싶은 요리 레시피를 말씀해주세요!<br>
+                -----------------------------------------------------<br>
+                **주의사항**<br>
+                1. 기존 레시피 이름을 ['레시피']라는 키워드와 함께 입력해주세요.<br>
+                예) OOO 레시피를 알려주세요.<br>
+                2. 본인의 식단 유형을 ['변환']이라는 키워드와 함께 입력해주세요.<br>
+                예) 저는 비건입니다. 레시피를 변환해주세요.<br>
+                3. 채팅 중 종료를 원하신다면 [종료]나 [exit]를 입력해주세요.<br>
+                ====================================================
+            </p>
+        </div>
+        
+        <!-- Form 태그 추가 -->
+        <form onsubmit="sendMessage(); return false;">
+            <input type="text" id="user-input" placeholder="레시피를 물어보세요!">
+            <button type="submit">전송</button>
+        </form>
+    </div>
+
+    <script>
+        async function sendMessage() {
+            const userInput = document.getElementById("user-input").value;
+            if (!userInput) return;
+
+            // 사용자 메시지를 화면에 표시
+            const chatBox = document.getElementById("chat-box");
+            const userMessage = document.createElement("p");
+            userMessage.className = "user-message";
+            userMessage.innerText = userInput;
+            chatBox.appendChild(userMessage);
+
+            // 서버에 메시지를 보내고 챗봇의 응답을 받음
+            const response = await fetch("/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: userInput })
+            });
+            const data = await response.json();
+
+            // 챗봇 응답을 화면에 표시
+            const botMessage = document.createElement("p");
+            botMessage.className = "bot-message";
+            botMessage.innerText = data.response;
+            chatBox.appendChild(botMessage);
+
+            document.getElementById("user-input").value = "";  // 입력 필드 초기화
+            chatBox.scrollTop = chatBox.scrollHeight;          // 스크롤을 가장 아래로 이동
+        }
+    </script>
+</body>
+</html>
