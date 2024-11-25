@@ -17,7 +17,7 @@ generation_config = {
     "temperature": 0.5,                 # 응답 다양성 줄이기
     "top_p": 0.85,                      # 확률적 범위 줄이기
     "top_k": 20,                        # 고려할 단어 수 줄이기
-    "max_output_tokens": 500,           # 응답 길이 줄이기
+    "max_output_tokens": 1000,           # 응답 길이 줄이기
     "response_mime_type": "text/plain"  # 응답 형식: 일반 텍스트
 }
 
