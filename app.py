@@ -14,11 +14,11 @@ genai.configure(api_key=api_key)
 
 # 모델 생성 설정
 generation_config = {
-    "temperature": 1,                  # 응답 다양성 조절
-    "top_p": 0.95,                     # 상위 95% 단어만 사용
-    "top_k": 40,                       # 상위 40개 단어만 고려
-    "max_output_tokens": 8192,         # 최대 출력 토큰 제한
-    "response_mime_type": "text/plain" # 응답 형식: 일반 텍스트
+    "temperature": 0.5,                 # 응답 다양성 줄이기
+    "top_p": 0.85,                      # 확률적 범위 줄이기
+    "top_k": 20,                        # 고려할 단어 수 줄이기
+    "max_output_tokens": 500,           # 응답 길이 줄이기
+    "response_mime_type": "text/plain"  # 응답 형식: 일반 텍스트
 }
 
 # 모델 인스턴스 생성
@@ -42,20 +42,24 @@ def is_recipe_related(question):
 def home():
     return render_template("index.html")  # 홈 페이지 렌더링
 
-# 챗봇 API 엔드포인트
-@app.route("/chat", methods=["POST"])
+@app.route("/chat", methods=["GET", "POST"])
 def chat():
-    user_input = request.json.get("message")  # 클라이언트의 메시지 가져오기
+    if request.method == "GET":
+        return jsonify({"response": "이 페이지는 GET 요청을 지원하지 않습니다. POST 요청을 사용하세요."})
 
-    # 레시피 관련이 아닌 경우 사과 메시지 반환
+    # POST 요청 처리
+    user_input = request.json.get("message")
+    if not user_input:
+        return jsonify({"response": "메시지가 비어 있습니다. 메시지를 입력해주세요."})
+
     if not is_recipe_related(user_input):
         return jsonify({"response": "죄송합니다. 요리 레시피 변환만 할 수 있습니다."})
 
-    # 사용자의 메시지를 히스토리에 추가하고 응답 생성
     chat_session.history.append({"role": "user", "parts": [user_input]})
-    response = chat_session.send_message(user_input)  # 챗봇 응답 생성
+    response = chat_session.send_message(user_input)
+    print("Chatbot Response:", response)  # 디버그용 출력
+    return jsonify({"response": response.text})
 
-    return jsonify({"response": response.text})  # JSON 형식으로 응답 반환
 
 # 애플리케이션 실행
 if __name__ == "__main__":
