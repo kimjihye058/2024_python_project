@@ -9,6 +9,7 @@
 ## 🛠️ Development Environment
 - `Python`
 - `Gemini AI api`
+- `Flask`
 - `VSCode`
 
 ## 🧑‍💻 Member
@@ -17,3 +18,5 @@
 - 김지혜
 
 ## 📍Main function
+- 기존 레시피 검색 및 출력
+- 식단 정보 입력 및 레시피 변환 기능
